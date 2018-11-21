@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 import 'package:flutter_calendar/calendar_tile.dart';
-import 'package:date_utils/date_utils.dart';
+import 'package:flutter_calendar/date_utils.dart';
 
 typedef DayBuilder(BuildContext context, DateTime day);
 
@@ -16,6 +16,7 @@ class Calendar extends StatefulWidget {
   final bool showTodayAction;
   final bool showCalendarPickerIcon;
   final DateTime initialCalendarDateOverride;
+  final bool weekStartsOnMonday;
 
   Calendar(
       {this.onDateSelected,
@@ -25,7 +26,8 @@ class Calendar extends StatefulWidget {
       this.showTodayAction: true,
       this.showChevronsToChangeRange: true,
       this.showCalendarPickerIcon: true,
-      this.initialCalendarDateOverride});
+      this.initialCalendarDateOverride,
+      this.weekStartsOnMonday: false});
 
   @override
   _CalendarState createState() => new _CalendarState();
@@ -49,7 +51,7 @@ class _CalendarState extends State<Calendar> {
     var firstDayOfCurrentWeek = Utils.firstDayOfWeek(_selectedDate);
     var lastDayOfCurrentWeek = Utils.lastDayOfWeek(_selectedDate);
     selectedWeeksDays =
-        Utils.daysInRange(firstDayOfCurrentWeek, lastDayOfCurrentWeek)
+        Utils.daysInRange(firstDayOfCurrentWeek, lastDayOfCurrentWeek.add(Duration(days: 1)))
             .toList()
             .sublist(0, 7);
     displayMonth = Utils.formatMonth(_selectedDate);
@@ -92,6 +94,8 @@ class _CalendarState extends State<Calendar> {
     } else {
       leftInnerIcon = new Container();
     }
+
+    displayMonth = Utils.formatMonth(_selectedDate);
 
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
